@@ -30,12 +30,6 @@
     },
     "plugins": [
       [
-        "react-native-maps",
-        {
-          "enableGoogleMaps": false
-        }
-      ],
-      [
         "expo-camera",
         {
           "cameraPermission": "BirdDex uses your camera to photograph and identify bird species."

@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
-import MapView, { Marker } from 'react-native-maps';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -188,30 +187,22 @@ export default function SightingDetailScreen() {
         </View>
       )}
 
-      {/* Map */}
+      {/* Location coords card (map shown in native build) */}
       {hasLocation && (
         <View style={styles.mapSection}>
           <Text style={styles.mapTitle}>Spotted Here</Text>
           <View style={styles.mapContainer}>
-            <MapView
-              style={styles.map}
-              initialRegion={{
-                latitude: sighting.latitude!,
-                longitude: sighting.longitude!,
-                latitudeDelta: 0.02,
-                longitudeDelta: 0.02,
-              }}
-              scrollEnabled={false}
-              zoomEnabled={false}
-            >
-              <Marker
-                coordinate={{
-                  latitude: sighting.latitude!,
-                  longitude: sighting.longitude!,
-                }}
-                title={bird?.commonName}
-                description={sighting.locationName}
-              />
+            <View style={styles.coordsCard}>
+              <Ionicons name="location" size={28} color={colors.primaryLight} />
+              <View>
+                <Text style={styles.coordsText}>
+                  {sighting.latitude!.toFixed(5)}, {sighting.longitude!.toFixed(5)}
+                </Text>
+                {sighting.locationName ? (
+                  <Text style={styles.coordsLabel}>{sighting.locationName}</Text>
+                ) : null}
+              </View>
+            </View>
             </MapView>
           </View>
         </View>
@@ -292,5 +283,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  map: { width: '100%', height: 200 },
+  coordsCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.md,
+    backgroundColor: colors.card,
+  },
+  coordsText: { ...typography.bodyBold, color: colors.text },
+  coordsLabel: { ...typography.caption, color: colors.textSecondary, marginTop: 2 },
 });
