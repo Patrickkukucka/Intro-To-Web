@@ -50,9 +50,12 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler("kraken_bot.log"),
+        logging.FileHandler("kraken_bot.log", encoding="utf-8"),
     ],
 )
+# Force UTF-8 on Windows so Unicode chars don't crash the terminal
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 log = logging.getLogger("kraken_bot")
 
 # ---------------------------------------------------------------------------
@@ -179,7 +182,7 @@ def place_market_order(pair: str, side: str, volume: float) -> dict:
         "volume":    f"{volume:.8f}",
     }
     result = private_post("/0/private/AddOrder", payload)
-    log.info("Order placed: %s %s %s — txids: %s", side.upper(), volume, pair, result.get("txid"))
+    log.info("Order placed: %s %s %s -txids: %s", side.upper(), volume, pair, result.get("txid"))
     return result
 
 
@@ -192,7 +195,7 @@ def place_limit_order(pair: str, side: str, volume: float, price: float) -> dict
         "volume":    f"{volume:.8f}",
     }
     result = private_post("/0/private/AddOrder", payload)
-    log.info("Limit order placed: %s %s %s @ %.5f — txids: %s",
+    log.info("Limit order placed: %s %s %s @ %.5f -txids: %s",
              side.upper(), volume, pair, price, result.get("txid"))
     return result
 
@@ -317,11 +320,11 @@ class KrakenBot:
         self._print_trade_summary("CLOSE", pos.entry_price, current_price, pnl_usd, pnl_pct, new_bal)
         self.position = None
         if new_bal <= STOP_FLOOR_USD:
-            log.critical("Balance $%.2f has hit the $%.2f floor — STOPPING ALL TRADING.", new_bal, STOP_FLOOR_USD)
+            log.critical("Balance $%.2f has hit the $%.2f floor -STOPPING ALL TRADING.", new_bal, STOP_FLOOR_USD)
             sys.exit(1)
 
     def _print_trade_summary(self, action, entry, exit_price, pnl_usd, pnl_pct, balance):
-        print(f"\n{'─'*55}")
+        print(f"\n{'-'*55}")
         print(f"  TRADE SUMMARY [{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}]")
         print(f"  Action:      {action}")
         if self.position:
@@ -334,7 +337,7 @@ class KrakenBot:
             print(f"  P&L:         {arrow}${pnl_usd:.4f}  ({arrow}{pnl_pct:.2f}%)")
         if balance is not None:
             print(f"  Balance:     ${balance:.2f}")
-        print(f"{'─'*55}\n")
+        print(f"{'-'*55}\n")
 
     # ------------------------------------------------------------------
     # Main loop
@@ -353,13 +356,13 @@ class KrakenBot:
 
     def run_once(self):
         """Execute one iteration of the trading loop."""
-        log.info("── Tick ──────────────────────────────────────────────")
+        log.info("-- Tick ----------------------------------------------")
         balance = get_usd_balance()
         log.info("USD balance: $%.2f", balance)
 
         # Check floor
         if balance <= STOP_FLOOR_USD:
-            log.critical("Balance $%.2f ≤ floor $%.2f — STOPPING.", balance, STOP_FLOOR_USD)
+            log.critical("Balance $%.2f <= floor $%.2f -- STOPPING.", balance, STOP_FLOOR_USD)
             sys.exit(1)
 
         # --- Manage existing position ---
@@ -379,7 +382,7 @@ class KrakenBot:
                 # Check EMA exit signal
                 signal = self.detect_signal(pos.pair)
                 if signal == "sell":
-                    log.info("EMA bearish crossover — exiting position.")
+                    log.info("EMA bearish crossover -exiting position.")
                     self.close_position("EMA_EXIT", price)
             return   # only one position at a time
 
@@ -394,7 +397,7 @@ class KrakenBot:
                 log.info("%s price=$%.4f | signal=%s",
                          DISPLAY_NAMES.get(pair, pair), price, signal or "none")
                 if signal == "buy":
-                    log.info("EMA bullish crossover detected on %s — opening position.",
+                    log.info("EMA bullish crossover detected on %s -opening position.",
                              DISPLAY_NAMES.get(pair, pair))
                     self.open_position(pair, price, balance)
                     break   # only one position at a time
@@ -403,22 +406,23 @@ class KrakenBot:
 
     def run(self):
         self.check_credentials()
-        log.info("Kraken Trading Bot starting up…")
+        log.info("Kraken Trading Bot starting up...")
         log.info("Watchlist: %s", ", ".join(DISPLAY_NAMES[p] for p in WATCHLIST))
         log.info("Max position: $%.2f | TP: %.0f%% | SL: %.0f%% | Candles: %d-min",
                  MAX_POSITION_USD, TAKE_PROFIT_PCT * 100, STOP_LOSS_PCT * 100, INTERVAL_MIN)
 
         self.verify_balance()
+        time.sleep(1)  # ensure nonce gap before first private API call in loop
 
         while True:
             try:
                 self.run_once()
             except KeyboardInterrupt:
-                log.info("Interrupted by user — shutting down.")
+                log.info("Interrupted by user -shutting down.")
                 sys.exit(0)
             except Exception as exc:
                 log.error("Unexpected error in main loop: %s", exc, exc_info=True)
-            log.info("Sleeping %d minutes until next tick…", INTERVAL_MIN)
+            log.info("Sleeping %d minutes until next tick...", INTERVAL_MIN)
             time.sleep(LOOP_SECONDS)
 
 
