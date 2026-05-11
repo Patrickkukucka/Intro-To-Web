@@ -2,6 +2,7 @@ import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
 
 import Navigation from './src/navigation';
@@ -38,14 +39,16 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <StatusBar style="light" />
-      <Navigation />
-      {catchAnimation && (
-        <CatchAnimation
-          result={catchAnimation}
-          onDismiss={() => setCatchAnimation(null)}
-        />
-      )}
+      <SafeAreaProvider>
+        <StatusBar style="light" />
+        <Navigation />
+        {catchAnimation && (
+          <CatchAnimation
+            result={catchAnimation}
+            onDismiss={() => setCatchAnimation(null)}
+          />
+        )}
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }
