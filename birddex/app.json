@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "BirdDex",
+    "slug": "birddex",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.birddex.app",
+      "buildNumber": "1",
+      "requireFullScreen": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSCameraUsageDescription": "BirdDex uses your camera to photograph and identify bird species.",
+        "NSPhotoLibraryUsageDescription": "BirdDex accesses your photo library so you can upload bird photos for identification.",
+        "NSPhotoLibraryAddUsageDescription": "BirdDex saves bird photos to your library.",
+        "NSLocationWhenInUseUsageDescription": "BirdDex records the GPS location of your bird sightings so you can view them on a map.",
+        "NSMicrophoneUsageDescription": "BirdDex may access the microphone when recording video of birds.",
+        "UIRequiresFullScreen": true
+      }
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "BirdDex uses your camera to photograph and identify bird species."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "BirdDex accesses your photo library so you can upload bird photos for identification.",
+          "cameraPermission": "BirdDex uses your camera to photograph birds."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "BirdDex records the GPS location of your bird sightings so you can view them on a map."
+        }
+      ]
+    ],
+    "scheme": "birddex",
+    "extra": {
+      "supabaseUrl": "YOUR_SUPABASE_URL",
+      "supabaseAnonKey": "YOUR_SUPABASE_ANON_KEY",
+      "eBirdApiKey": "YOUR_EBIRD_API_KEY"
+    }
+  }
+}
