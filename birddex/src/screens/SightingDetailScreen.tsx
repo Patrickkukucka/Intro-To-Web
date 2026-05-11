@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -194,7 +194,6 @@ export default function SightingDetailScreen() {
           <Text style={styles.mapTitle}>Spotted Here</Text>
           <View style={styles.mapContainer}>
             <MapView
-              provider={PROVIDER_GOOGLE}
               style={styles.map}
               initialRegion={{
                 latitude: sighting.latitude!,

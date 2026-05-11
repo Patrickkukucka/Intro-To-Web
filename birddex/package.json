@@ -1,7 +1,7 @@
 {
   "name": "birddex",
   "version": "1.0.0",
-  "main": "expo-router/entry",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -24,7 +24,6 @@
     "expo-image-picker": "~16.0.3",
     "expo-linear-gradient": "~14.0.1",
     "expo-location": "~18.0.4",
-    "expo-router": "~4.0.9",
     "expo-status-bar": "~2.0.0",
     "react": "18.3.2",
     "react-native": "0.76.3",
