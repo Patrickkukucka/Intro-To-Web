@@ -203,7 +203,6 @@ export default function SightingDetailScreen() {
                 ) : null}
               </View>
             </View>
-            </MapView>
           </View>
         </View>
       )}
