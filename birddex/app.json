@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "BirdDex",
+    "slug": "birddex",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0D1B2A"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.birddex.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "BirdDex uses your camera to identify birds.",
+        "NSPhotoLibraryUsageDescription": "BirdDex accesses your photo library to upload bird photos.",
+        "NSLocationWhenInUseUsageDescription": "BirdDex records the location of your bird sightings."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0D1B2A"
+      },
+      "package": "com.birddex.app",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-camera",
+      "expo-image-picker",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "BirdDex records the location of your bird sightings."
+        }
+      ]
+    ],
+    "scheme": "birddex",
+    "extra": {
+      "supabaseUrl": "YOUR_SUPABASE_URL",
+      "supabaseAnonKey": "YOUR_SUPABASE_ANON_KEY",
+      "eBirdApiKey": "YOUR_EBIRD_API_KEY"
+    }
+  }
+}
