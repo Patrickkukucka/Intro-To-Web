@@ -1,4 +1,5 @@
 import { Bird, INaturalistResult, Rarity } from '../types';
+import { BirdBiography, buildBiographyFromWikipedia } from '../data/birdBiographies';
 
 const BASE_URL = 'https://api.inaturalist.org/v1';
 
@@ -78,6 +79,26 @@ export const fetchTaxonDetails = async (taxonId: number) => {
   if (!response.ok) return null;
   const data = await response.json();
   return data.results?.[0] ?? null;
+};
+
+export const fetchBirdBiography = async (
+  taxonId: number,
+): Promise<BirdBiography | null> => {
+  const taxon = await fetchTaxonDetails(taxonId);
+  if (!taxon) return null;
+
+  const summary: string = taxon.wikipedia_summary ?? '';
+  if (!summary) return null;
+
+  const conservation = taxon.conservation_status as
+    | { status: string; status_name: string }
+    | undefined;
+
+  return buildBiographyFromWikipedia(
+    summary,
+    conservation?.status_name ?? '',
+    conservation?.status ?? '',
+  );
 };
 
 export const RARITY_FUN_FACTS: Record<Rarity, string> = {
